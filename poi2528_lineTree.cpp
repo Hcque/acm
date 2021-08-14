@@ -15,19 +15,19 @@ class solve{
 public:
     solve(int n): N(n) {
         Initial();
-	Input();
-	CreateLineTree(1, maxP, 1);
-	Solution();
-    }
+        Input();
+        CreateLineTree(1, maxP, 1);
+        Solution();
+    } 
+    
     ~solve(){
-
-        cout << "des" << endl;
         for (int i=1;i<=N;i++)
             delete [] reg[i];
-        // delete [] reg;
-        delete [] ep;
-        delete [] colored;
-        delete [] LT;
+        delete [] reg;
+        delete[] ep;
+        delete[] colored;
+        delete[] LT;
+        delete[] dis;
     }
     void Initial();
 	void Input();
@@ -36,28 +36,28 @@ public:
     void Insert(int a, int b, int p, int color);
 
     void dfs(int p);
+
 protected:
     int **reg;
     int maxP;
     int N;
     LineTree_Node *LT;
     int *ep;
-    int *dis;
+    unsigned short *dis;
     int cnt;
     bool *colored;
 
 };
 
 void solve::Initial(){
-    cout << "initial" << endl;
+    // cout << "initial" << endl;
     reg = new int*[N+1];
     for (int i=1;i<=N;i++){
         reg[i] = new int[2];
     }
     ep = new int[2*N+1];
-    dis = new int[10000000+1];
-    memset(dis, 0, sizeof(int)* (10000000+1));
-    LT = new LineTree_Node[N+1];
+    dis = new unsigned short[10000000+1];
+    memset(dis, 0, sizeof(unsigned short)* (10000000+1));
     colored = new bool[N+1];
     memset(colored, false, (N+1)* sizeof(bool));
     
@@ -65,11 +65,9 @@ void solve::Initial(){
 }
 
 void solve::Input(){
-    cout << "input" << endl;
     int index = 0;
     for (int i=1;i<=N;i++){
         cin >> reg[i][0] >> reg[i][1];
-        // cout << reg[i][0];
         if (dis[reg[i][0]] == 0){
             ep[index++] = reg[i][0];
             dis[reg[i][0]] = 1;
@@ -80,12 +78,14 @@ void solve::Input(){
         }
     }
     sort(ep, ep+index);
-    int hash = 0;
+    unsigned short hash = 0;
     for (int j=0;j<index;j++){
         dis[ep[j]] = ++hash;
     }
     maxP = hash;
-    // for (int i=0;i<2*N;i++) cout << ep[i] << " ";
+    LT = new LineTree_Node[4*maxP+1];
+    // for (int i=0;i<index;i++) cout << ep[i] << " ";
+    // cout << endl;
 }
 void solve::CreateLineTree(int s, int e, int p)
 {
@@ -100,8 +100,14 @@ void solve::CreateLineTree(int s, int e, int p)
 
 void solve::Solution(){
     for (int i=1;i<=N;i++){
+        // cout << reg[i][0]<< " "<< reg[i][1] << "|";
+        // cout << dis[reg[i][0]] << " "<< dis[reg[i][1]] << "|";
+        // cout << i << endl;
         Insert(dis[reg[i][0]], dis[reg[i][1]], 1, i);
     }
+    // for (int i=0;i<4*maxP+1;i++)
+        // cout << LT[i].col << " ";
+    // cout << endl;
     dfs(1);
     printf("%d\n", cnt);
     return;
@@ -125,15 +131,18 @@ void solve::dfs(int p){
 }
 void solve::Insert(int a, int b, int p, int color){
     if (a > LT[p].e || b < LT[p].s) return;
-    else if (a < LT[p].e || b > LT[p].s) {
-        LT[p].col = LT[2*p].col = LT[2*p+1].col = color;
+    else if (a <= LT[p].s && b >= LT[p].e) {
+        LT[p].col = color;
         return;
     }
     else{
-        LT[p].col = -1; // multi colored
-        int mid = (a+b) >> 1;
-        Insert(a, mid, 2*p, color);
-        Insert(mid+1, b, 2*p+1, color);
+        if (LT[p].col >= 0){
+            LT[2*p].col = LT[2*p+1].col = LT[p].col;
+            LT[p].col = -1;
+        }
+        // LT[p].col = -1; // multi colored
+        Insert(a, b, 2*p, color);
+        Insert(a, b, 2*p+1, color);
         return;
     }
 }
@@ -144,7 +153,7 @@ int main()
     cin >> num;
     while (num--){
 	cin >> M;
-        solve s(M);
+    solve s(M);
     }
     return 0;
 }
