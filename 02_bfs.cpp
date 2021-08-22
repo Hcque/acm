@@ -3,6 +3,7 @@
 #include <cstring>
 using namespace std;
 
+
 int N;
 struct Node{
   int A[10];
