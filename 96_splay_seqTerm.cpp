@@ -158,12 +158,10 @@ struct Splay_Tree{
     }
 };
 
-Splay_Tree hehe;
 int main()
 {
     int n, m;
     scanf("%d %d", &n, &m);
-    hehe.init(n);
     for (int i=0;i<m;i++){
         int flag;
         int L, R;

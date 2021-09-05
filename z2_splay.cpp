@@ -1,23 +1,20 @@
- // passed
-
 #include <iostream>
 using namespace std;
 
-const int maxn = 1e5+5;
+const int maxn = 1e5+10;
 struct Node{
     int l,r,val;
-    int cnt,size;
-} spl[maxn];
+    int size, cnt;
+}spl[maxn];
 int root, cnt;
 
-void newnode(int& now, int val){
+void newNode(int &now, int val){
     spl[now=++cnt].val = val;
-    spl[cnt].cnt = 1;
-    spl[cnt].size = 1;
+    spl[now].size = spl[now].cnt = 1;
 }
 
 void update(int now){
-    spl[now].size = spl[spl[now].l].size+spl[spl[now].r].size+spl[now].cnt;
+    spl[now].size = spl[now].cnt+spl[spl[now].l].size+spl[spl[now].r].size;
 }
 
 void zig(int &now){
@@ -25,63 +22,71 @@ void zig(int &now){
     spl[now].l = spl[l].r;
     spl[l].r = now;
     now = l;
-    update(spl[now].r), update(now); 
+    update(spl[now].r); update(now);
 }
-
 void zag(int &now){
     int r = spl[now].r;
     spl[now].r = spl[r].l;
     spl[r].l = now;
     now = r;
-    update(spl[now].l), update(now);
+    update(spl[now].l); update(now);
 }
 
-void splaying(int x, int& y){
-    if (x==y) return;
-    int &l = spl[y].l, &r = spl[y].r;
-    if (x==l) zig(y);
-    else if (x==r) zag(y);
-    else{
+void splaying(int x, int &y){
+    if (x == y) return;
+    int &l = spl[y].l;int &r = spl[y].r;
+    if (l==x) zig(y);
+    else if (r==x) zag(y);
+    else {
         if (spl[x].val < spl[y].val){
-            if (spl[x].val < spl[l].val)
-                splaying(x, spl[l].l),zig(y),zig(y);
+            if (spl[x].val < spl[l].val)splaying(x,spl[l].l), zig(l), zig(y);
             else splaying(x, spl[l].r), zag(l), zig(y);
-        } 
-        else{
-            if (spl[x].val > spl[r].val)
-                splaying(x, spl[r].r),zag(y),zag(y);
-            else splaying(x, spl[r].l),zig(r), zag(y);
+        }
+        else {
+            if (spl[x].val > spl[r].val) splaying(x,spl[r].r), zag(r), zag(y);
+            else splaying(x, spl[r].l), zig(r), zag(y);
         }
     }
 }
-
 void ins(int &now, int val){
-    if (!now) newnode(now, val), splaying(now, root);
+    if (!now) newNode(now, val), splaying(now, root);
+    else if (val == spl[now].val){
+        spl[now].cnt++;
+        spl[now].size++;
+        splaying(now, root);
+    }
     else if (val < spl[now].val) ins(spl[now].l, val);
-    else if (val > spl[now].val) ins(spl[now].r, val);
-    else spl[now].cnt++, spl[now].size++,splaying(now, root);
+    else ins(spl[now].r, val);
+    update(now);
 }
 
-void delNode(int now){
-    splaying(now, root);
-    if (spl[root].cnt > 1) spl[root].cnt--, spl[root].size--;
-    else if (spl[now].r){  //TODO
-        int p = spl[root].r;
-        while (spl[p].l) p = spl[p].l;
-        splaying(p, spl[root].r);
-        spl[spl[root].r].l = spl[root].l;
-        root = spl[root].r;
-        update(root);
+void del(int now, int val){
+    if (spl[now].val == val){
+        splaying(now, root);
+        if (spl[now].cnt > 1) spl[now].cnt--,spl[now].size--;
+        else {
+            // if ()
+            if (!spl[root].r){
+                root = spl[root].l;
+            }
+            else{
+
+            int n=spl[root].r;
+            while (spl[n].l) n=spl[n].l;
+            splaying(n,spl[root].r);
+            spl[spl[root].r].l = spl[root].l;
+            root = spl[root].r;
+            update(root);
+            }
+
+        }
     }
-    else {
-        root = spl[root].l;
-    }
-}
-void del(int now, int& val){
-    if (spl[now].val == val) delNode(now);
     else if (val < spl[now].val) del(spl[now].l, val);
     else del(spl[now].r, val);
+    update(now);
 }
+
+
 
 int getrank(int val){
     // cout << "getrank";
@@ -121,7 +126,6 @@ int getnum(int rank){
 }
 
 
-
 int main()
 {
     int T;
@@ -140,11 +144,4 @@ int main()
             case 6: cout << getnum(getrank(x+1)) << endl; break;
         }
     }
-    // ins(root, 1);
-    // ins(root, 2);
-    // ins(root, 2);
-    // ins(root, 4);
-    // ins(root, 4);
-    // ins(root, 50);
-    // cout << getnum(getrank(4)+1) << endl;
 }

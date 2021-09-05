@@ -22,7 +22,7 @@ void tarjan(int x){
         if (!dfsn[v]) 
             tarjan(v);
         if (onStack[v]) low[x] = min(low[x], low[v]);
-        else if (onStack[v]) low[x] = min(low[x], dfsn[v]);
+        // else if (onStack[v]) low[x] = min(low[x], dfsn[v]);
     }
     
     if (low[x] == dfsn[x]){

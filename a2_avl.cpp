@@ -1,11 +1,10 @@
 #include <iostream>
 using namespace std;
-
-
+// passed
 const int MAXN = 1e5+4;
 
 struct Node{
-    int l,r,val;
+    int l,r,val, fa;
     int size, height;
 } avl[MAXN];
 
@@ -44,6 +43,7 @@ void rrotate(int& now){
 }
 
 void check(int &now){
+
     int f = factor(now);
     if (f>1){
         int lf = factor(avl[now].l);
@@ -53,15 +53,16 @@ void check(int &now){
     else if (f < -1){
         int rf = factor(avl[now].r);
         if (rf<0) lrotate(now);
-        else rrotate(avl[now].r), lrotate(now);
+        else { rrotate(avl[now].r); lrotate(now);}
     }
-    else if (now) update(now);
+    if (now) update(now);
+
 }
 
 void insert(int &now, int val){
     if (!now) newNode(now, val);
-    else if (val < avl[now].val) insert(avl[now].l, val);
-    else insert(avl[now].r, val);
+    else if (val < avl[now].val) insert(avl[now].l, val), avl[avl[now].l].fa = now;
+    else insert(avl[now].r, val), avl[avl[now].r].fa = now;
     check(now);
 }
 
@@ -80,6 +81,7 @@ int find(int &now, int fa){
 
 void del(int &now, int val){
     if (val == avl[now].val){
+        // del_node(now);
         int l = avl[now].l, r = avl[now].r;
         if (!l||!r) now = l+r;
         else {
@@ -93,8 +95,9 @@ void del(int &now, int val){
     else if (val < avl[now].val) del(avl[now].l, val);
     else del(avl[now].r, val);
     check(now);
-}
 
+   
+}
 
 int getrank(int val){
     int now = root, rank = 1;
@@ -123,8 +126,6 @@ int getnum(int rank){
     return avl[now].val;
 }
 
-
-
 int main(){
     int T;
     cin >> T;
@@ -138,9 +139,60 @@ int main(){
 	    case 3: cout << getrank(x) << endl; break;
 	    case 4: cout << getnum(x) << endl; break;
 	    case 5: cout << getnum(getrank(x)-1) << endl; break;
-	    case 6: cout << getnum(getrank(x)+1) << endl; break;
+	    case 6: cout << getnum(getrank(x+1)) << endl; break;
 	}
     }
 
 }
 
+ // int x = root;
+    // while (x){
+    //     if (avl[x].val == val){
+    //       del_node(x);
+    //       return;
+    //     }
+    //     else if ( val < avl[x].val){
+    //         x = avl[x].l;
+    //     }
+    //     else {
+    //         x = avl[x].r;
+    //     }
+    // }
+    
+
+// int succ_h(int &x){
+//     if (avl[x].l){
+//         succ_h(avl[x].l);
+//     }
+// }
+// int succ(int &now){
+//     int x = avl[now].r;
+//     while ( avl[x].l){
+//         x = avl[x].l;
+//     }
+//     return x;
+// }
+
+
+// void del_node(int x){
+//             int l = avl[x].l; int r = avl[x].r; int fa = avl[x].fa;
+//             if (l == 0 && r==0) {
+//                 if (x==avl[fa].l) avl[fa].l=0;
+//                 else avl[fa].r = 0;
+//             }
+//             else if (l==1&&r==0){
+//                 if (x==avl[fa].l) avl[fa].l=avl[x].l;
+//                 else avl[fa].r = avl[x].l;
+//             }
+//             else if (l==0&&r==1){
+//                 if (x==avl[fa].l) avl[fa].l=avl[x].r;
+//                 else avl[fa].r = avl[x].r;
+//             }
+//             else {
+//                 int s = succ(x);
+//                 swap(avl[x].val , avl[s].val);
+//                 // int m = s;
+//                 // while ( avl[m].fa != x) check(m);
+//                 del_node(s);
+//             }
+// }

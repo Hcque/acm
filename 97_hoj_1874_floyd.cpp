@@ -1,3 +1,5 @@
+// 31MS	1472K
+
 // #include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
