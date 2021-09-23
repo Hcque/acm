@@ -1,3 +1,5 @@
+#include <iostream>
+using namespace std;
 
 const int MAXN = 1e5+5;
 const int MAXE = MAXN*2;
@@ -20,7 +22,6 @@ int fa[MAXN], depth[MAXN], size[MAXN], hchild[MAXN],
 void dfs1(int u, int f){
    fa[u] = f;
    depth[f] = 1 + depth[u];
-    // for (int i = Head[u], )
 }
 
 int cnt, dfsn[MAXN], top[MAXN], w[MAXN];

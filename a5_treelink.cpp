@@ -117,9 +117,26 @@ void mchain(int x, int y ,int z){
     modify(dfsn[x],dfsn[y], z);
 }
 
-int qchain(){
+int qchain(int x, int y){
+    int ret=0;
+    while (top[x] != top[y]){
+        if (dep[top[x]] < dep[top[y]]) swap(x, y);
 
+        ret += query(dfsn[top[x]], dfsn[x]);
+        x = fa[top[x]];
+    }
+    if (dep[x]>dep[y]) swap(x, y);
+    ret += query(dfsn[x], dfsn[y]);
+    return ret % mod;
 }
+
+inline void mson(int x, int z){
+    modify(dfsn[x], dfsn[x]+siz[x]-1, z);
+}
+ int qson(int x){
+    return query(dfsn[x], dfsn[x]+siz[x]-1);
+}
+
 int main(){
     scanf("%d%d%d%d", &n, &m, &r, &mod);
     for (int i=1;i<=n;i++){

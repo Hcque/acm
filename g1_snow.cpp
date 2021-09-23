@@ -1,33 +1,44 @@
 // -1%6
+// pointer!!
+//13176K	3313MS
+//8476K	3532MS
+//9656K	3032MS
 
 #include <iostream>
+#include <algorithm>
 #include <cstring>
 #include <cstdio>
 using namespace std;
-typedef long long ll;
+// typedef long long ll;
 
-const int maxn = 1e6+10;
-const int maxH = 999983;
-struct flake{
-    ll snow[6];
-} arr[maxn];
+const int maxn = 1e5+10;
+const int maxH = 999997;
+// struct flake{
+//     ll snow[6];
+// } arr[maxn];
 
 class HashTable{
 public:
-    ll snow[6];
+    int snow[6];
     HashTable* next;
-    HashTable(){ next = 0; }
-} H[maxH];
+    HashTable(){ fill(snow,snow+6,0);next = 0; }
+};
 
-int _hash(ll x[6]){
-    ll ans = 0;
+HashTable* H[maxH];
+// void init(){
+//     H.clear();
+//     H.resize(maxn);
+//     fill(H.begin(), H.end(), 0);
+// }
+int _hash(int x[6]){
+    int ans = 0;
     for (int i=0;i<6;i++){
         ans += x[i]%maxH;
     }
     return ans%maxH;
 }
 
-int cmp(ll x[6], ll y[6]){
+int cmp(int x[6], int y[6]){
     int r = 0;
     while (r <= 5){
         int i=0;
@@ -55,13 +66,14 @@ int cmp(ll x[6], ll y[6]){
 }
 // -1 find same
 // 0 no same
-int ins(ll x[6]){
+int ins(int x[6]){
     int k = _hash(x);
-    if (H[k].snow[0] == 0){
-        memcpy(H[k].snow, x,6*sizeof(ll));
+    if (!H[k]){
+        H[k] = new HashTable();
+        memcpy(H[k]->snow, x,6*sizeof(int));
     }
     else {
-        HashTable* now = &H[k];
+        HashTable* now = H[k];
         while (now){
             if (cmp(now->snow, x)){
                 return -1;
@@ -69,7 +81,7 @@ int ins(ll x[6]){
             now = now->next;
         }
         now = new HashTable();
-        memcpy(now->snow, x, 6*sizeof(ll));
+        memcpy(now->snow, x, 6*sizeof(int));
     }
     return 0;
 }
@@ -77,11 +89,13 @@ int ins(ll x[6]){
 int main(){
     int n;
     scanf("%d", &n);
+    // init();
+    int tmp[6];
     for (int i=0;i<n;i++){
         for (int j=0;j<6;j++){
-            scanf("%lld", &arr[i].snow[j]);
+            scanf("%d", &tmp[j]);
         }
-        int ans = ins(arr[i].snow);
+        int ans = ins(tmp);
         if (ans == -1){
             cout << "Twin snowflakes found." << endl;
             return 0;

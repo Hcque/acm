@@ -11,6 +11,8 @@
         "xtree": "cpp",
         "queue": "cpp",
         "utility": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "ios": "cpp",
+        "xutility": "cpp"
     }
 }

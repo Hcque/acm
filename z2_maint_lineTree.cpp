@@ -33,8 +33,6 @@ int query(int l, int r, int L, int R, int k){
     else return query(m+1,r, h[L].r, h[R].r, k-tmp);
 }
 
-
-
 int main(){
     int n,m;
     scanf("%d%d", &n,&m);
