@@ -33,7 +33,7 @@ int prim()
                 t = j;
         ans += dist[t];
         vis[t] = 1;
-        cout << t << endl;
+        // cout << t << endl;
 
         for (int j = 1; j <= n; j ++ )
             dist[j] = min(dist[j], g[t][j]);

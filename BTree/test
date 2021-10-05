@@ -1,0 +1,12 @@
+10
+push 9
+empty
+pop
+push 2
+push 7
+push 10
+empty
+query
+query
+empty
+

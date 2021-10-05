@@ -47,6 +47,7 @@ void splay(int x, int k)
     while (tr[x].p != k)
     {
         int y = tr[x].p, z = tr[y].p;
+        if (z != k) 
 
     }
 }

@@ -62,7 +62,6 @@ double andrew()
         ans += get_dist(q[stk[i-1]], q[stk[i]]);
     }    
     return ans;
-
 }
 
 int main()

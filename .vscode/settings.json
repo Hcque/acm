@@ -13,6 +13,9 @@
         "utility": "cpp",
         "algorithm": "cpp",
         "ios": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "ostream": "cpp",
+        "chrono": "cpp",
+        "random": "cpp"
     }
 }
