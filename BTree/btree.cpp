@@ -130,7 +130,6 @@ if (search_way){
     }
 
     // find bisect
-    cout << "begin bisect" << endl;
     int l = 0 , r = cur->count-1;
     while (l < r)
     {
