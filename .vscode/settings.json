@@ -16,6 +16,9 @@
         "xutility": "cpp",
         "ostream": "cpp",
         "chrono": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "initializer_list": "cpp",
+        "stack": "cpp",
+        "type_traits": "cpp"
     }
 }
