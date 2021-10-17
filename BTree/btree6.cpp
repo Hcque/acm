@@ -1,9 +1,21 @@
+
+// left - 1 in move left 
+// move right +1
+// right / left 
+
+// ++ / --
+
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 
 using namespace std;
 #define NODE Node<Record, order>
+
+const int N = 1e5+10;
+
+int n,m;
+int a[N];
 
 template <class Record, int order>
 struct Node{
@@ -18,22 +30,22 @@ struct Node{
 
 
 template <class Record, int order>
-class BTree
+class B_tree
 {
 public:
-    BTree() { root = nullptr; }
-    ~BTree(){
+    B_tree() { root = nullptr; }
+    ~B_tree(){
         void clear();
     }
 
-    void rec_visit(NODE* cur)
+    void rec_visit(NODE* cur, int cnt)
     {
         if (!cur) return;
-        rec_visit(cur->branch[0]);
+        rec_visit(cur->branch[0], cnt);
         for (int i = 0; i < cur->size; i ++ )
         {
-            cout << cur->data[i];
-            rec_visit(cur->branch[i+1]);
+            cout << cur->data[i] << " "; cnt ++;
+            rec_visit(cur->branch[i+1],cnt);
         }
     }
     int insert(NODE* cur, const Record& new_entry)
@@ -176,10 +188,12 @@ public:
 
         if (cur->branch[pos] && cur->branch[pos]->size < (order-1)/2)
             restore(cur, pos);
+        return 1;
     }
 
     void restore(NODE* cur, int pos)
     {
+        cerr << "restore\n";
         if (pos == 0)
         {
             if (cur->branch[pos+1]->size > (order-1)/2) move_left(cur, pos+1);
@@ -188,10 +202,9 @@ public:
         else if (pos == cur->size)
         {
             if (cur->branch[pos-1]->size > (order-1)/2) move_right(cur, pos-1);
-            else combine(cur, pos-1);
+            else combine(cur, pos);
         }
         else{
-
             if (cur->branch[pos-1]->size > (order-1)/2) move_right(cur, pos-1);
             else if (cur->branch[pos+1]->size > (order-1)/2) move_left(cur, pos+1);
             else combine(cur, pos);
@@ -201,7 +214,7 @@ public:
     {
         NODE* left = cur->branch[pos-1];
         NODE* right = cur->branch[pos];
-        left->data[left->size-1] = cur->data[pos-1];
+        left->data[left->size] = cur->data[pos-1];
         left->branch[++left->size] = right->branch[0];
         cur->data[pos-1] = right->data[0];
         right->size--;
@@ -217,21 +230,45 @@ public:
     {
         NODE* left = cur->branch[pos];
         NODE* right = cur->branch[pos+1];
-        left->data[left->size-1] = cur->data[pos-1];
+
+        right->branch[right->size+1] = right->branch[right->size];
+        for (int i = right->size;i >0; i -- )
+        {
+            right->data[i] = right->data[i-1];
+            right->branch[i] = right->branch[i-1];
+        }
+        right->size++;
+        right->data[0] = cur->data[pos];
+        right->branch[0] = left->branch[left->size--];
+        cur->data[pos] = left->data[left->size];
+    }
+
+     void combine(NODE* cur, int pos)
+    {
+        NODE* left = cur->branch[pos-1];
+        NODE* right = cur->branch[pos];
+        left->data[left->size] = cur->data[pos-1];
         left->branch[++left->size] = right->branch[0];
-        cur->data[pos-1] = right->data[0];
-        right->size--;
 
         for (int i = 0; i < right->size; i ++ )
         {
-            right->data[i] = right->data[i+1];
-            right->branch[i] = right->branch[i+1];
+            left->data[left->size] = right->data[i];
+            left->branch[++left->size] = right->branch[i+1];
         }
-        right->branch[right->size] = right->branch[right->size+1];
+        cur->size--;
+        for (int i = pos-1; i < cur->size; i ++ )
+        {
+            cur->data[i] = cur->data[i+1];
+            cur->branch[i+1] = cur->branch[i+2];
+        }
+        delete right;
     }
+
+
 
     void remove_node(NODE* cur, int pos)
     {
+        std::cerr << "remove node"  << cur->data[pos] << "\n";
         for (int i = pos; i < cur->size-1; i ++)
             cur->data[i] = cur->data[i+1];
         cur->size--;
@@ -239,24 +276,39 @@ public:
     void copy_pred(NODE* cur, int pos)
     {
         NODE* tmp = cur->branch[pos];
-        while (tmp) tmp = tmp->branch[tmp->size];
+        while ( tmp->branch[tmp->size]) tmp = tmp->branch[tmp->size];
         cur->data[pos] = tmp->data[tmp->size-1];
     }
-
-
-
-
 };
 
+
+// int main()
+// {
+//     BTree<int, 20> bt;
+//     for (int i = 1; i <= n; i ++ ) {
+//         bt.insert(bt.root, i);
+//     }
+
+//     bt.rec_visit(bt.root,0);
+//     for (int i = 1; i <= n; i ++ ) {
+//         bt.remove( i);
+//     }
+//     bt.rec_visit(bt.root,0);
+    
+    
+    
+// }
+
+B_tree<int, 5> bt;
 int main(int argc, char* argv[])
 {
-    BTree<int, 5> bt;
     int II = atoi(argv[1]);
 
-    for (int i = 1; i < II; i ++ ) 
+    for (int i = 1; i <= II; i ++ ) 
         bt.insert(bt.root, i);
+    for (int i = 1; i <= II; i ++ ) 
+        bt.remove( i);
 
-    // for (int i = 1; i < II; i ++ ) 
-    //     cout << bt.search(bt.root, i) ;
-    bt.rec_visit(bt.root);
+    for (int i = 1; i <= II; i ++ ) 
+        cout << bt.search(bt.root, i) ;
 }

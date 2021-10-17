@@ -335,6 +335,7 @@ void B_tree<Record, order>::copy_in_predecessor(B_node<Record, order> *cur,int p
 template<class Record, int order>
 void B_tree<Record, order>::restore(B_node<Record, order> *cur,int pos)
 {
+    cerr << "restore" << "\n";
     if (pos == cur->count)
         if (cur->branch[pos-1]->count > (order-1)/2 )
             move_right(cur, pos-1);
