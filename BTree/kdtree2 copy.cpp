@@ -1,7 +1,12 @@
+// largest value
+
 
 //4347 1747MS	9752K
+// http://acm.hdu.edu.cn/showproblem.php?pid=4347
 
 // 1716MS	9736K
+
+// hdoj 4347
 
 // pri max
 
@@ -20,8 +25,7 @@ int _idx;
 struct KDNode
 {
     const static int max_dims = 5;
-    double featrue[max_dims];
-    int _index;
+    int featrue[max_dims];
     int size;
     int region[max_dims][2];
     int dim;
@@ -29,7 +33,7 @@ struct KDNode
         return featrue[_idx] < other.featrue[_idx];
     }
 };
-typedef pair<double, KDNode> p;
+typedef pair<int, KDNode> p;
 priority_queue<p> Q;
 
 struct KDTree
@@ -62,16 +66,16 @@ struct KDTree
 
         if(p.featrue[dim] > data[o].featrue[dim])swap(lc,rc);
 
-        pair<double,KDNode> cur(0.0,data[o]);
+        pair<int,KDNode> cur(0,data[o]);
         for (int i = 0; i < dims; i ++ ) 
             cur.first += pow(p.featrue[i]-data[o].featrue[i],2);
         if (flag[lc]) k_close(p,k,lc);
         int fg = 0;
+        // cout << que.size() << "|" << k << endl;
         if (Q.size() < k){
             Q.push(cur); fg = 1;
         }
         else{
-            cout << cur.first << " || " <<  Q.top().first << endl;
             if (cur.first < Q.top().first)
             {
                 Q.pop(); Q.push(cur);
@@ -95,7 +99,6 @@ int main()
             for (int j = 0; j < k; j ++){
                 cin >> kdt.Node[i].featrue[j] ;
             }
-            kdt.Node[i]._index = i;
         }
         kdt.build(1,0,n-1,0);
         int m, num;
@@ -108,8 +111,20 @@ int main()
 
             while (Q.size()) Q.pop();
             kdt.k_close(knode,  num,1);
-            printf("the closest %lf points are:\n",num);
-            cout << Q.top().second._index << endl;
+            printf("the closest %d points are:\n",num);
+            vector<KDNode> vv;
+            while(Q.size())
+            {
+                vv.push_back(Q.top().second); Q.pop();
+            }
+
+            for (int i = vv.size()-1; i >= 0; i -- ){
+
+                for (int kk = 0; kk < k; kk ++ )
+                    printf("%d%c",vv[i].featrue[kk],kk==k-1?'\n':' ' );
+            }
+
+            
         }
 
     }
