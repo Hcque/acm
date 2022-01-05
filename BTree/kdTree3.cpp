@@ -31,10 +31,10 @@ struct KDNode
 };
 typedef pair<double, KDNode> P;
 
+priority_queue<P> que;
 struct KDTree
 {
     int dims;
-    priority_queue<P> que;
 
     KDNode data[N];
     KDNode tree[N<<2];
@@ -42,6 +42,7 @@ struct KDTree
     KDTree(): dims(D)
     {
         memset(flag, 0, sizeof flag);
+        
     }
 
     void build(int now, int l, int r, int dep)
@@ -65,7 +66,7 @@ struct KDTree
     void find_k_cloest(KDNode& kdnode, int now, int k)
     {
 
-        P p = {0,kdnode};
+        P p = {0,data[now]}; // !!!
         for (int i = 0; i < dims; i ++ )
             p.first += SQ(kdnode.featrue[i] - tree[now].featrue[i]);
         if (que.size() < k) que.push(p);
@@ -115,6 +116,7 @@ int main()
     while (q--)
     {
         KDNode kdn;
+        cout << que.size() << endl;
         for (int i = 0; i < m; i ++ )
         {
             cin >> kdn.featrue[i];
@@ -122,27 +124,28 @@ int main()
 
         cin >> k;
         cout << "k" << k << endl;
-        while (kdt.que.size()) 
-        {
-            cout << "=========" <<  kdt.que.size() << endl;
-            kdt.que.pop();
-            
-        }
-        kdt.find_k_cloest(kdn, 1, k);
+        // cout << que.size() << endl;
+        // while (que.size()) 
+        // {
+        //     cout << "=========" <<  que.size() << endl;
+        //     que.pop();
+        //     break;
+        // }
+        // kdt.find_k_cloest(kdn, 1, k);
         printf("the closest %d points are:\n", k );
-        vector<KDNode> tmpvec;
-        for (int i = 0; i < k; i ++ )
-        {
-            cout << i <<endl;
-            tmpvec.push_back(kdt.que.top().second);
-            kdt.que.pop();
-        }
+        // vector<KDNode> tmpvec;
+        // for (int i = 0; i < k; i ++ )
+        // {
+        //     cout << i <<endl;
+        //     tmpvec.push_back(que.top().second);
+        //     que.pop();
+        // }
 
-        for (int i= k-1;i>= 0; i --) {
-            for (int j = 0;j < kdt.dims; j ++ )
-                cout << tmpvec[i].featrue[j] << " ";
-            cout << endl;
-        }
+        // for (int i= k-1;i>= 0; i --) {
+        //     for (int j = 0;j < kdt.dims; j ++ )
+        //         cout << tmpvec[i].featrue[j] << " ";
+        //     cout << endl;
+        // }
     }
 
 
