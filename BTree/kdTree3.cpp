@@ -102,11 +102,11 @@ struct KDTree
         {
             swap(lc, rc);
         }
+        if (flag[lc]) find_k_cloest(kdnode, lc, k);
 
         P p = {0.0,tree[now]}; // !!!
         for (int i = 0; i < dims; i ++ )
             p.first += SQ(kdnode.featrue[i] - tree[now].featrue[i]);
-        if (flag[lc]) find_k_cloest(kdnode, lc, k);
 
         int rgt_search = 0;
         if (que.size() < k) que.push(p), rgt_search = 1;
