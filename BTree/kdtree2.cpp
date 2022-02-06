@@ -56,7 +56,6 @@ struct KDTree
     }
     void k_close(const KDNode& p, int k, int o)
     {
-        if (!flag[o]) return;
         int dim = data[o].dim;
         int lc = o<<1, rc = o<<1|1;
 
